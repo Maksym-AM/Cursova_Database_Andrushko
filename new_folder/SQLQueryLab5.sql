@@ -1,0 +1,54 @@
+USE First;
+GO
+
+CREATE LOGIN AM_GUEST
+	WITH PASSWORD = '123', default_database = First, check_expiration = off, check_policy = off;
+
+CREATE USER AM_GUEST
+FOR LOGIN AM_GUEST
+
+DROP USER AM_GUEST
+GO
+DROP LOGIN AM_GUEST
+EXECUTE AS USER = 'AM_GUEST'
+GO
+--створення ролей
+CREATE ROLE Administrator;
+CREATE ROLE Editor;
+CREATE ROLE Moderator;
+CREATE ROLE Filler;
+CREATE ROLE Reader;
+
+GRANT ALL TO Administrator WITH GRANT OPTION
+GO
+GRANT SELECT, INSERT, UPDATE,DELETE TO Editor
+GO
+GRANT SELECT, DELETE TO Moderator
+GO
+GRANT SELECT, INSERT ON Book TO Filler
+GO
+GRANT SELECT ON Book TO Reader
+GO
+GRANT SELECT ON Teacher TO Reader
+GO
+GRANT SELECT ON Student TO Reader
+GO
+--призначення ролей
+ALTER ROLE Reader ADD MEMBER AM_GUEST
+GO
+ALTER ROLE Filler ADD MEMBER AM_GUEST
+GO
+ALTER ROLE Filler DROP MEMBER AM_GUEST
+GO
+--призначення привілеїв для зміни таблиці
+GRANT SELECT ON Discipline TO AM_GUEST
+GO
+GRANT UPDATE ON Discipline TO AM_GUEST
+GO
+GRANT INSERT ON Discipline TO AM_GUEST
+GO
+--відкликання привілеєй у ролей
+REVOKE SELECT ON Discipline TO Reader 
+GO
+REVOKE INSERT ON Discipline TO Reader 
+GO
